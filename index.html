@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payroll Partners - Toggle Dilemma Animation</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --toggle-on: #22c55e;
+            --toggle-off: #475569;
+            --toggle-handle: #ffffff;
+            --brand-color: #38bdf8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Malgun Gothic', -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .title-banner {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .title-banner h1 {
+            font-size: 1.8rem;
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
+        }
+
+        .container {
+            display: flex;
+            gap: 3rem;
+            width: 90%;
+            max-width: 1000px;
+            position: relative;
+        }
+
+        .side-card {
+            flex: 1;
+            background-color: var(--card-bg);
+            border-radius: 24px;
+            padding: 2.5rem;
+            border: 2px solid transparent;
+            transition: all 0.5s ease;
+        }
+
+        .side-card.competitor {
+            border-color: #334155;
+        }
+
+        .side-card.payroll-partners {
+            border-color: var(--brand-color);
+            box-shadow: 0 0 25px rgba(56, 189, 248, 0.15);
+        }
+
+        .side-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #334155;
+        }
+
+        .competitor .side-title { color: var(--text-muted); }
+        .payroll-partners .side-title { color: var(--brand-color); }
+
+        /* Toggle UI Styling */
+        .toggle-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 1rem 1.5rem;
+            border-radius: 16px;
+            transition: background 0.3s;
+        }
+
+        .toggle-label {
+            font-size: 1.05rem;
+            font-weight: 500;
+            color: var(--text-main);
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 54px;
+            height: 30px;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: var(--toggle-off);
+            transition: .3s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 24px;
+            width: 24px;
+            left: 3px;
+            bottom: 3px;
+            background-color: var(--toggle-handle);
+            transition: .3s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        /* Toggle States */
+        .active .slider {
+            background-color: var(--toggle-on);
+        }
+
+        .active .slider:before {
+            transform: translateX(24px);
+        }
+
+        /* Virtual Cursor for Animation Demo */
+        #virtual-cursor {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white" stroke="black" stroke-width="2"><path d="M4.5 3V17l4.2-4.2 3.8 8.8 2.3-1-3.8-8.8H18L4.5 3z"/></svg>') no-repeat;
+            pointer-events: none;
+            z-index: 999;
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+            display: none;
+        }
+
+        /* Control Button for Demo */
+        .control-btn {
+            margin-top: 2.5rem;
+            padding: 0.8rem 2rem;
+            background-color: var(--brand-color);
+            color: #000;
+            border: none;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .control-btn:hover { transform: scale(1.05); }
+    </style>
+</head>
+<body>
+
+    <div class="title-banner">
+        <h1>타사 대행 vs Payroll Partners 모션 비교</h1>
+        <p style="color: var(--text-muted)">왜 타 급여대행은 3가지를 동시에 만족할 수 없을까요?</p>
+    </div>
+
+    <div class="container">
+        <div id="virtual-cursor"></div>
+
+        <div class="side-card competitor" id="card-comp">
+            <div class="side-title">타 급여대행</div>
+            
+            <div class="toggle-row active" id="comp-t1">
+                <div class="toggle-label">근태/급여 자동 연결 시스템</div>
+                <div class="switch"><span class="slider"></span></div>
+            </div>
+            
+            <div class="toggle-row active" id="comp-t2">
+                <div class="toggle-label">법적 리스크 ZERO</div>
+                <div class="switch"><span class="slider"></span></div>
+            </div>
+            
+            <div class="toggle-row" id="comp-t3">
+                <div class="toggle-label">인하우스 시니어 전문가</div>
+                <div class="switch"><span class="slider"></span></div>
+            </div>
+        </div>
+
+        <div class="side-card payroll-partners" id="card-pp">
+            <div class="side-title">Payroll Partners</div>
+            
+            <div class="toggle-row" id="pp-t1">
+                <div class="toggle-label">근태/급여 자동 연결 시스템</div>
+                <div class="switch"><span class="slider"></span></div>
+            </div>
+            
+            <div class="toggle-row" id="pp-t2">
+                <div class="toggle-label">법적 리스크 ZERO</div>
+                <div class="switch"><span class="slider"></span></div>
+            </div>
+            
+            <div class="toggle-row" id="pp-t3">
+                <div class="toggle-label">인하우스 시니어 전문가</div>
+                <div class="switch"><span class="slider"></span></div>
+            </div>
+        </div>
+    </div>
+
+    <button class="control-btn" onclick="startAnimation()">시뮬레이션 재생</button>
+
+    <script>
+        function startAnimation() {
+            const cursor = document.getElementById('virtual-cursor');
+            cursor.style.display = 'block';
+
+            // Reset States
+            document.getElementById('comp-t1').classList.add('active');
+            document.getElementById('comp-t2').classList.add('active');
+            document.getElementById('comp-t3').classList.remove('active');
+            
+            document.getElementById('pp-t1').classList.remove('active');
+            document.getElementById('pp-t2').classList.remove('active');
+            document.getElementById('pp-t3').classList.remove('active');
+
+            // Timeline Sequence
+            // 1. Move to Competitor Toggle 3 and turn ON -> Toggle 1 turns OFF
+            setTimeout(() => {
+                moveCursor('#comp-t3 .switch');
+                setTimeout(() => {
+                    document.getElementById('comp-t3').classList.add('active');
+                    document.getElementById('comp-t1').classList.remove('active');
+                }, 600);
+            }, 500);
+
+            // 2. Move to Competitor Toggle 1 and turn ON -> Toggle 2 turns OFF
+            setTimeout(() => {
+                moveCursor('#comp-t1 .switch');
+                setTimeout(() => {
+                    document.getElementById('comp-t1').classList.add('active');
+                    document.getElementById('comp-t2').classList.remove('active');
+                }, 600);
+            }, 2000);
+
+            // 3. Move to Competitor Toggle 2 and turn ON -> Toggle 3 turns OFF
+            setTimeout(() => {
+                moveCursor('#comp-t2 .switch');
+                setTimeout(() => {
+                    document.getElementById('comp-t2').classList.add('active');
+                    document.getElementById('comp-t3').classList.remove('active');
+                }, 600);
+            }, 3500);
+
+            // 4. Move to Payroll Partners and slide down to turn EVERYTHING ON
+            setTimeout(() => {
+                moveCursor('#pp-t1 .switch');
+                setTimeout(() => document.getElementById('pp-t1').classList.add('active'), 500);
+            }, 5500);
+
+            setTimeout(() => {
+                moveCursor('#pp-t2 .switch');
+                setTimeout(() => document.getElementById('pp-t2').classList.add('active'), 400);
+            }, 6400);
+
+            setTimeout(() => {
+                moveCursor('#pp-t3 .switch');
+                setTimeout(() => {
+                    document.getElementById('pp-t3').classList.add('active');
+                    cursor.style.display = 'none'; // Hide cursor at end
+                }, 400);
+            }, 7200);
+        }
+
+        function moveCursor(selector) {
+            const cursor = document.getElementById('virtual-cursor');
+            const target = document.querySelector(selector);
+            const containerRect = document.querySelector('.container').getBoundingClientRect();
+            const targetRect = target.getBoundingClientRect();
+
+            const x = targetRect.left - containerRect.left + (targetRect.width / 2);
+            const y = targetRect.top - containerRect.top + (targetRect.height / 2);
+
+            cursor.style.transform = `translate(${x}px, ${y}px)`;
+        }
+    </script>
+</body>
+</html>
